@@ -1,18 +1,28 @@
 import React from "react";
+import '../styles/Header.css'
 
-function Navbar() {
+function Navbar({ onMenuClick }) {
   return (
     <header className="top-navbar">
 
-      <div>
+      <div className="navbar-left">
 
-        <h6 className="mb-0">
-          Farmer Portal
-        </h6>
+        <button className="menu-toggle-btn" onClick={onMenuClick}>
+          <i className="bi bi-list"></i>
+        </button>
 
-        <small>
-          Manage your procurement easily
-        </small>
+        <div className="navbar-brand">
+
+          <div className="logo-icon">
+            <i className="bi bi-flower1"></i>
+          </div>
+
+          <div>
+            <h6>Smart Mandi</h6>
+            <small>Farmer Portal</small>
+          </div>
+
+        </div>
 
       </div>
 
@@ -20,26 +30,17 @@ function Navbar() {
       <div className="navbar-right">
 
         <button className="notification-btn">
-
           <i className="bi bi-bell"></i>
-
           <span></span>
-
         </button>
-
 
         <div className="profile-mini">
 
-          <div className="profile-avatar">
-            R
-          </div>
+          <div className="profile-avatar">R</div>
 
           <div>
-
             <strong>Ramesh Kumar</strong>
-
             <small>Farmer</small>
-
           </div>
 
           <i className="bi bi-chevron-down"></i>

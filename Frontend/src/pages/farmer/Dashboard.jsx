@@ -72,6 +72,7 @@ function Dashboard() {
         />
 
         <StatCard
+        
           title="Completed"
           value="12"
           icon="bi-check-circle"

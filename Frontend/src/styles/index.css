@@ -1,7 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-@import './Header.css';
-@import './Sidebar.css';
-
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');@import './Header.css';@import './Sidebar.css';
 :root {
   --primary: #16834a;
   --primary-dark: #0f693b;
@@ -72,21 +69,21 @@ textarea {
 }
 
 .page-label {
-  font-size: 9px;
+  font-size: 11px;
   letter-spacing: 1.5px;
   color: var(--primary);
   font-weight: 800;
 }
 
 .page-header h1 {
-  font-size: 26px;
+  font-size: 27px;
   font-weight: 800;
   margin: 6px 0;
 }
 
 .page-header p {
   color: var(--muted);
-  font-size: 12px;
+  font-size: 13px;
   margin: 0;
 }
 
@@ -100,7 +97,7 @@ textarea {
   color: white;
   padding: 11px 17px;
   border-radius: 8px;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   display: inline-flex;
   align-items: center;
@@ -121,7 +118,7 @@ textarea {
   color: var(--text);
   padding: 10px 15px;
   border-radius: 8px;
-  font-size: 11px;
+  font-size: 13px;
   font-weight: 700;
   display: inline-flex;
   align-items: center;
@@ -161,7 +158,7 @@ textarea {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 18px;
+  font-size: 19px;
 }
 
 .stat-icon.green {
@@ -185,19 +182,19 @@ textarea {
 }
 
 .stat-info p {
-  font-size: 10px;
+  font-size: 12px;
   color: var(--muted);
   margin-bottom: 4px;
 }
 
 .stat-info h3 {
-  font-size: 21px;
+  font-size: 22px;
   margin: 0;
   font-weight: 800;
 }
 
 .stat-info small {
-  font-size: 9px;
+  font-size: 11px;
   color: #929b95;
 }
 
@@ -227,20 +224,20 @@ textarea {
 }
 
 .card-header h4 {
-  font-size: 15px;
+  font-size: 16px;
   margin: 5px 0 0;
   font-weight: 800;
 }
 
 .card-header > a {
   color: var(--primary);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 700;
 }
 
 .section-small {
   color: #8c9690;
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 800;
   letter-spacing: 1.2px;
 }
@@ -252,7 +249,7 @@ textarea {
 .status-badge {
   padding: 6px 9px;
   border-radius: 20px;
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 700;
 }
 
@@ -282,19 +279,19 @@ textarea {
 .status-center-info small {
   display: block;
   color: #929b95;
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 700;
   margin-bottom: 6px;
 }
 
 .booking-info-grid strong {
   display: block;
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .token-number {
   color: var(--primary);
-  font-size: 18px !important;
+  font-size: 19px !important;
 }
 
 .queue-progress {
@@ -304,7 +301,7 @@ textarea {
 .queue-progress-top {
   display: flex;
   justify-content: space-between;
-  font-size: 9px;
+  font-size: 11px;
   color: var(--muted);
   margin-bottom: 7px;
 }
@@ -374,19 +371,19 @@ textarea {
 
 .quick-action strong {
   display: block;
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .quick-action small {
   display: block;
-  font-size: 9px;
+  font-size: 11px;
   color: var(--muted);
   margin-top: 2px;
 }
 
 .quick-action > i {
   color: #a5aea8;
-  font-size: 11px;
+  font-size: 13px;
 }
 
 /* =====================================
@@ -404,14 +401,14 @@ textarea {
 
 .custom-table thead th {
   color: #929b95;
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 800;
   border-bottom: 1px solid var(--border);
   padding: 12px;
 }
 
 .custom-table tbody td {
-  font-size: 10px;
+  font-size: 12px;
   padding: 15px 12px;
   border-bottom: 1px solid #f0f2f0;
 }
@@ -420,7 +417,7 @@ textarea {
   display: inline-block;
   padding: 5px 9px;
   border-radius: 20px;
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 700;
 }
 
@@ -454,13 +451,13 @@ textarea {
 }
 
 .form-section h4 {
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 800;
   margin: 0;
 }
 
 .form-section p {
-  font-size: 10px;
+  font-size: 12px;
   color: var(--muted);
   margin: 5px 0 18px;
 }
@@ -500,21 +497,21 @@ textarea {
 
 .center-details strong {
   display: block;
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .center-details span,
 .center-details small {
   display: block;
   color: var(--muted);
-  font-size: 9px;
+  font-size: 11px;
   margin-top: 3px;
 }
 
 .capacity-badge {
   background: #e8f6ee;
   color: var(--primary);
-  font-size: 8px;
+  font-size: 10px;
   padding: 5px 8px;
   border-radius: 15px;
   font-weight: 700;
@@ -543,14 +540,14 @@ textarea {
 .date-option small,
 .date-option span {
   display: block;
-  font-size: 7px;
+  font-size: 9px;
   color: var(--muted);
   font-weight: 700;
 }
 
 .date-option strong {
   display: block;
-  font-size: 20px;
+  font-size: 21px;
   margin: 3px 0;
 }
 
@@ -565,7 +562,7 @@ textarea {
   background: white;
   border-radius: 8px;
   padding: 10px 7px;
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 600;
 }
 
@@ -576,7 +573,7 @@ textarea {
 
 .slot-option small {
   display: block;
-  font-size: 7px;
+  font-size: 9px;
   color: #89938c;
   margin-top: 4px;
 }
@@ -588,7 +585,7 @@ textarea {
 }
 
 .form-label {
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 700;
   margin-bottom: 7px;
 }
@@ -596,7 +593,7 @@ textarea {
 .form-control,
 .form-select {
   border-color: var(--border);
-  font-size: 10px;
+  font-size: 12px;
   min-height: 42px;
   border-radius: 7px;
 }
@@ -608,7 +605,7 @@ textarea {
 }
 
 .input-group-text {
-  font-size: 9px;
+  font-size: 11px;
   background: #f7f9f7;
   border-color: var(--border);
 }
@@ -649,11 +646,11 @@ textarea {
 }
 
 .summary-center strong {
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .summary-center small {
-  font-size: 8px;
+  font-size: 10px;
   color: var(--muted);
   margin-top: 3px;
 }
@@ -666,12 +663,12 @@ textarea {
 }
 
 .summary-row span {
-  font-size: 9px;
+  font-size: 11px;
   color: var(--muted);
 }
 
 .summary-row strong {
-  font-size: 9px;
+  font-size: 11px;
 }
 
 .info-alert {
@@ -681,7 +678,7 @@ textarea {
   border-radius: 8px;
   display: flex;
   gap: 8px;
-  font-size: 8px;
+  font-size: 10px;
   line-height: 1.5;
 }
 
@@ -694,7 +691,7 @@ textarea {
   color: var(--primary);
   padding: 7px 11px;
   border-radius: 20px;
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 700;
 }
 
@@ -723,7 +720,7 @@ textarea {
 
 .token-status {
   color: var(--muted);
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .queue-position {
@@ -734,13 +731,13 @@ textarea {
 
 .queue-position small {
   display: block;
-  font-size: 7px;
+  font-size: 9px;
   color: var(--muted);
 }
 
 .queue-position strong {
   display: block;
-  font-size: 17px;
+  font-size: 18px;
   margin-top: 4px;
 }
 
@@ -753,7 +750,7 @@ textarea {
 .current-token-card p,
 .wait-card p {
   color: var(--muted);
-  font-size: 9px;
+  font-size: 11px;
 }
 
 .next-token {
@@ -763,7 +760,7 @@ textarea {
   border-radius: 8px;
   display: flex;
   justify-content: space-between;
-  font-size: 9px;
+  font-size: 11px;
 }
 
 .next-token strong {
@@ -778,11 +775,11 @@ textarea {
 }
 
 .wait-time span {
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .refresh-time {
-  font-size: 8px;
+  font-size: 10px;
   color: #929b95;
   margin-top: 15px;
 }
@@ -792,7 +789,7 @@ textarea {
 }
 
 .center-name {
-  font-size: 9px;
+  font-size: 11px;
   color: var(--muted);
 }
 
@@ -820,7 +817,7 @@ textarea {
 .queue-number {
   width: 70px;
   font-weight: 800;
-  font-size: 11px;
+  font-size: 13px;
 }
 
 .queue-person {
@@ -833,17 +830,17 @@ textarea {
 }
 
 .queue-person strong {
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .queue-person small {
-  font-size: 8px;
+  font-size: 10px;
   color: var(--muted);
   margin-top: 2px;
 }
 
 .queue-badge {
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 700;
   padding: 5px 8px;
   border-radius: 15px;
@@ -892,7 +889,7 @@ textarea {
 .status-overview-center small {
   display: block;
   color: var(--muted);
-  font-size: 8px;
+  font-size: 10px;
   margin-top: 7px;
 }
 
@@ -901,7 +898,7 @@ textarea {
 }
 
 .status-center-info strong {
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .timeline {
@@ -957,11 +954,11 @@ textarea {
 }
 
 .timeline-content strong {
-  font-size: 9px;
+  font-size: 11px;
 }
 
 .timeline-content small {
-  font-size: 7px;
+  font-size: 9px;
   color: var(--muted);
   margin-top: 4px;
 }
@@ -977,7 +974,7 @@ textarea {
 }
 
 .produce-grid strong {
-  font-size: 10px;
+  font-size: 12px;
 }
 
 /* =====================================
@@ -1009,13 +1006,13 @@ textarea {
 }
 
 .profile-sidebar h3 {
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 800;
 }
 
 .profile-sidebar > p {
   color: var(--muted);
-  font-size: 9px;
+  font-size: 11px;
 }
 
 .verified-badge {
@@ -1023,7 +1020,7 @@ textarea {
   color: var(--primary);
   padding: 6px 9px;
   border-radius: 15px;
-  font-size: 8px;
+  font-size: 10px;
   font-weight: 700;
 }
 
@@ -1035,7 +1032,7 @@ textarea {
   display: flex;
   gap: 9px;
   margin-bottom: 13px;
-  font-size: 9px;
+  font-size: 11px;
   color: var(--muted);
 }
 
@@ -1078,7 +1075,7 @@ textarea {
   align-items: center;
   gap: 10px;
   font-weight: 800;
-  font-size: 16px;
+  font-size: 17px;
 }
 
 .auth-content {
@@ -1091,7 +1088,7 @@ textarea {
   border: 1px solid rgba(255,255,255,.15);
   padding: 8px 12px;
   border-radius: 20px;
-  font-size: 9px;
+  font-size: 11px;
 }
 
 .auth-content h1 {
@@ -1107,7 +1104,7 @@ textarea {
 
 .auth-content p {
   color: rgba(255,255,255,.75);
-  font-size: 12px;
+  font-size: 13px;
   line-height: 1.8;
   max-width: 430px;
 }
@@ -1121,7 +1118,7 @@ textarea {
   align-items: center;
   gap: 10px;
   margin-bottom: 14px;
-  font-size: 10px;
+  font-size: 12px;
 }
 
 .auth-features i {
@@ -1153,7 +1150,7 @@ textarea {
 
 .auth-heading p {
   color: var(--muted);
-  font-size: 10px;
+  font-size: 12px;
   margin-bottom: 28px;
 }
 
@@ -1163,7 +1160,7 @@ textarea {
 
 .form-group label {
   display: block;
-  font-size: 9px;
+  font-size: 11px;
   font-weight: 700;
   margin-bottom: 7px;
 }
@@ -1178,7 +1175,7 @@ textarea {
   top: 50%;
   transform: translateY(-50%);
   color: #87918b;
-  font-size: 13px;
+  font-size: 14px;
 }
 
 .input-icon input {
@@ -1189,7 +1186,7 @@ textarea {
   display: flex;
   justify-content: space-between;
   margin-bottom: 20px;
-  font-size: 9px;
+  font-size: 11px;
 }
 
 .remember {
@@ -1222,14 +1219,14 @@ textarea {
   position: relative;
   background: white;
   padding: 0 10px;
-  font-size: 8px;
+  font-size: 10px;
   color: #9ba49e;
 }
 
 .register-text {
   text-align: center;
   color: var(--muted);
-  font-size: 9px;
+  font-size: 11px;
 }
 
 .register-text a {
@@ -1260,7 +1257,7 @@ textarea {
   position: absolute;
   left: 13px;
   top: 13px;
-  font-size: 11px;
+  font-size: 13px;
   color: #9ba49e;
 }
 
@@ -1270,7 +1267,7 @@ textarea {
   border: 1px solid var(--border);
   border-radius: 7px;
   padding-left: 35px;
-  font-size: 10px;
+  font-size: 12px;
   outline: none;
 }
 
@@ -1320,7 +1317,7 @@ textarea {
   }
 
   .page-header h1 {
-    font-size: 21px;
+    font-size: 22px;
   }
 
   .stats-grid {
@@ -1379,7 +1376,7 @@ textarea {
   }
 
   .mobile-logo strong {
-    font-size: 17px;
+    font-size: 18px;
   }
 
 }

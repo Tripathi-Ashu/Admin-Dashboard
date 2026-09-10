@@ -1,7 +1,7 @@
 import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import '../styles/Sidebar.css'
-function Sidebar({ isOpen, onClose }) {
+function Sidebar({ isOpen }) {
 
   const navigate = useNavigate();
 
@@ -30,7 +30,6 @@ function Sidebar({ isOpen, onClose }) {
             key={item.path}
             to={item.path}
             className={({ isActive }) => `sidebar-link ${isActive ? "active" : ""}`}
-            onClick={onClose}
           >
             <i className={`bi ${item.icon}`}></i>
             <span>{item.name}</span>

@@ -3,134 +3,134 @@
 ===================================== */
 
 .sidebar {
-    width: 260px;
-    background: #ffffff;
-    border-right: 1px solid var(--border);
-    position: fixed;
-    left: 0;
-    top: 82px;
-    bottom: 0;
-    display: flex;
-    flex-direction: column;
-    z-index: 200;
-    transform: translateX(-100%);
-    transition: transform .25s ease;
+  width: 260px;
+  background: #ffffff;
+  border-right: 1px solid var(--border);
+  position: fixed;
+  left: 0;
+  top: 82px;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  z-index: 200;
+  transform: translateX(-100%);
+  transition: transform .25s ease;
+}
+
+.sidebar.open {
+  transform: translateX(0);
+  box-shadow: 6px 0 20px rgba(0, 0, 0, .08);
+}
+
+.sidebar-menu {
+  padding: 28px 15px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.menu-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #9aa49d;
+  letter-spacing: 1px;
+  padding: 0 12px;
+  margin-bottom: 12px;
+}
+
+.sidebar-link {
+  height: 46px;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 0 13px;
+  color: #68746d;
+  border-radius: 9px;
+  margin-bottom: 5px;
+  font-size: 14px;
+  font-weight: 500;
+  transition: .2s;
+}
+
+.sidebar-link i {
+  font-size: 18px;
+}
+
+.sidebar-link:hover {
+  background: #f2f7f3;
+  color: var(--primary);
+}
+
+.sidebar-link.active {
+  background: var(--primary-light);
+  color: var(--primary);
+  font-weight: 700;
+}
+
+.sidebar-bottom {
+  padding: 18px;
+  border-top: 1px solid var(--border);
+}
+
+.help-box {
+  background: #f5f8f6;
+  padding: 12px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.help-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: white;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.help-box strong {
+  display: block;
+  font-size: 13px;
+}
+
+.help-box small {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.logout-btn {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  height: 42px;
+  border-radius: 8px;
+  text-align: left;
+  padding: 0 12px;
+  color: #6f7973;
+  font-size: 13px;
+}
+
+.logout-btn:hover {
+  background: #fff1f1;
+  color: #d64d4d;
+}
+
+/* overlay behind sidebar when open (mobile/desktop dono ke liye) */
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  top: 82px;
+  background: rgba(0, 0, 0, .35);
+  z-index: 150;
+}
+
+@media (max-width: 500px) {
+  .sidebar {
+    width: 80%;
+    max-width: 280px;
   }
-  
-  .sidebar.open {
-    transform: translateX(0);
-    box-shadow: 6px 0 20px rgba(0, 0, 0, .08);
-  }
-  
-  .sidebar-menu {
-    padding: 28px 15px;
-    flex: 1;
-    overflow-y: auto;
-  }
-  
-  .menu-title {
-    font-size: 10px;
-    font-weight: 700;
-    color: #9aa49d;
-    letter-spacing: 1px;
-    padding: 0 12px;
-    margin-bottom: 12px;
-  }
-  
-  .sidebar-link {
-    height: 46px;
-    display: flex;
-    align-items: center;
-    gap: 13px;
-    padding: 0 13px;
-    color: #68746d;
-    border-radius: 9px;
-    margin-bottom: 5px;
-    font-size: 13px;
-    font-weight: 500;
-    transition: .2s;
-  }
-  
-  .sidebar-link i {
-    font-size: 17px;
-  }
-  
-  .sidebar-link:hover {
-    background: #f2f7f3;
-    color: var(--primary);
-  }
-  
-  .sidebar-link.active {
-    background: var(--primary-light);
-    color: var(--primary);
-    font-weight: 700;
-  }
-  
-  .sidebar-bottom {
-    padding: 18px;
-    border-top: 1px solid var(--border);
-  }
-  
-  .help-box {
-    background: #f5f8f6;
-    padding: 12px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 14px;
-  }
-  
-  .help-icon {
-    width: 34px;
-    height: 34px;
-    border-radius: 8px;
-    background: white;
-    color: var(--primary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  
-  .help-box strong {
-    display: block;
-    font-size: 11px;
-  }
-  
-  .help-box small {
-    font-size: 9px;
-    color: var(--muted);
-  }
-  
-  .logout-btn {
-    width: 100%;
-    border: 0;
-    background: transparent;
-    height: 42px;
-    border-radius: 8px;
-    text-align: left;
-    padding: 0 12px;
-    color: #6f7973;
-    font-size: 12px;
-  }
-  
-  .logout-btn:hover {
-    background: #fff1f1;
-    color: #d64d4d;
-  }
-  
-  /* overlay behind sidebar when open (mobile/desktop dono ke liye) */
-  .sidebar-overlay {
-    position: fixed;
-    inset: 0;
-    top: 82px;
-    background: rgba(0, 0, 0, .35);
-    z-index: 150;
-  }
-  
-  @media (max-width: 500px) {
-    .sidebar {
-      width: 80%;
-      max-width: 280px;
-    }
-  }
+}

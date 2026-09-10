@@ -12,19 +12,9 @@ function FarmerLayout() {
 
       <Navbar onMenuClick={() => setSidebarOpen((prev) => !prev)} />
 
-      <Sidebar
-        isOpen={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
-      />
+      <Sidebar isOpen={sidebarOpen} />
 
-      {sidebarOpen && (
-        <div
-          className="sidebar-overlay"
-          onClick={() => setSidebarOpen(false)}
-        ></div>
-      )}
-
-      <div className="main-wrapper">
+      <div className={`main-wrapper ${sidebarOpen ? "sidebar-open" : ""}`}>
         <main className="main-content">
           <Outlet />
         </main>

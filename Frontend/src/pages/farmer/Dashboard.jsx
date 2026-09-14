@@ -68,7 +68,7 @@ function Dashboard() {
           value="24 min"
           icon="bi-clock"
           description="Updated just now"
-          type="orange"
+          type="orange" 
         />
 
         <StatCard

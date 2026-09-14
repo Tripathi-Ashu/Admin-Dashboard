@@ -1,22 +1,25 @@
 pipeline {
     agent any
  
+    // Injects Node.js globally so SonarScanner can parse React code
+    tools {
+        nodejs 'NodeJS'
+    }
+ 
     environment {
-        DOCKER_HUB_USER = 'your_dockerhub_username' 
+        DOCKER_HUB_USER = 'your_dockerhub_username' // Update this
         IMAGE_NAME      = "${DOCKER_HUB_USER}/admin-dashboard"
         DEPLOYMENT_NAME = "react-dashboard-deployment"
+        // Automatically extracts the proper path to the fresh download
+        SCANNER_HOME    = tool 'SonarScanner' 
     }
  
     stages {
         stage('SonarQube Analysis') {
             steps {
                 dir('Frontend') { 
-                    // This pulls the tool we named in Manage Jenkins > Tools
-                    script {
-                        def scannerHome = tool 'SonarScanner'
-                        withSonarQubeEnv('SonarQube') {
-                            sh "${scannerHome}/bin/sonar-scanner -Dsonar.projectKey=admin-dashboard -Dsonar.projectName=AdminDashboard"
-                        }
+                    withSonarQubeEnv('SonarQube') {
+                        sh "${SCANNER_HOME}/bin/sonar-scanner -Dsonar.projectKey=admin-dashboard -Dsonar.projectName=AdminDashboard"
                     }
                 }
             }
@@ -25,8 +28,6 @@ pipeline {
         stage('Quality Gate') {
             steps {
                 timeout(time: 1, unit: 'HOURS') {
-                    // This pauses the pipeline and waits for SonarQube's Webhook response. 
-                    // abortPipeline: true kills the pipeline if the gate fails.
                     waitForQualityGate abortPipeline: true
                 }
             }

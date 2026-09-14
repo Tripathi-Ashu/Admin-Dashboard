@@ -17,6 +17,7 @@ pipeline {
         stage('Build Image') {
 
             steps {
+                dir('Frontend'){
 
                 echo "Building Frontend Docker Image..."
 
@@ -25,7 +26,7 @@ pipeline {
             }
 
         }
- 
+        } 
         stage('Push to Docker Hub') {
 
             steps {

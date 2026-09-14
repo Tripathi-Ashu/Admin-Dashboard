@@ -3,7 +3,7 @@ pipeline {
    environment {
        DOCKER_HUB_USER = 'adi1310'
        IMAGE_NAME      = "${DOCKER_HUB_USER}/react-app"
-       DEPLOYMENT_NAME = "react-dashboard-depolyment"
+       DEPLOYMENT_NAME = "react-dashboard-deployment"
    }
    stages {
        stage('Build Image') {

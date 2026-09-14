@@ -7,8 +7,8 @@ pipeline {
     }
  
     environment {
-        DOCKER_HUB_USER = 'your_dockerhub_username' // Update this
-        IMAGE_NAME      = "${DOCKER_HUB_USER}/admin-dashboard"
+        DOCKER_HUB_USER = 'adi1310' // Update this
+        IMAGE_NAME      = "${DOCKER_HUB_USER}/react-app"
         DEPLOYMENT_NAME = "react-dashboard-deployment"
         // Automatically extracts the proper path to the fresh download
         SCANNER_HOME    = tool 'SonarScanner' 

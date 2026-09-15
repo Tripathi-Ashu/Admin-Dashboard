@@ -3,14 +3,6 @@ import { Link } from 'react-router-dom';
 import StatCard from '../../components/StatCard';
 
 function Dashboard() {
-  const unusedVariable = "hi";
-  const anotherUnusedNumber = 42;
-  const deprecatedFlag = false;
-
-  // DUPLICATE CODE BLOCK 1 (Intentional duplication for SonarQube duplication detection)
-  const duplicateHeaderTitle = "Today s Booking";
-  const duplicateCenterName = "Lucknow Mandi Center";
-
   return (
     <div>
       {/* PAGE HEADER */}
@@ -198,5 +190,6 @@ function Dashboard() {
     </div>
   );
 }
+
 
 export default Dashboard;

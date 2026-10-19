@@ -1,6 +1,52 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { api, getFarmer, saveFarmer } from "../../utils/api";
 
 function Profile() {
+
+  const [farmer, setFarmer] = useState(getFarmer());
+  const [form, setForm] = useState({
+    name: farmer?.name || "",
+    village: farmer?.village || "",
+    district: farmer?.district || "",
+    state: farmer?.state || "",
+    primaryCrop: farmer?.primaryCrop || "Wheat",
+    address: farmer?.address || ""
+  });
+  const [message, setMessage] = useState(null);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    api("/auth/me")
+      .then(({ farmer: f }) => {
+        setFarmer(f);
+        saveFarmer(f);
+        setForm({
+          name: f.name, village: f.village, district: f.district,
+          state: f.state, primaryCrop: f.primaryCrop, address: f.address
+        });
+      })
+      .catch((err) => setMessage({ type: "danger", text: err.message }));
+  }, []);
+
+  const update = (field) => (e) => setForm({ ...form, [field]: e.target.value });
+
+  const handleSave = async () => {
+    setSaving(true);
+    setMessage(null);
+    try {
+      const { farmer: f } = await api("/auth/me", { method: "PUT", body: form });
+      setFarmer(f);
+      saveFarmer(f);
+      setMessage({ type: "success", text: "Profile updated successfully" });
+    } catch (err) {
+      setMessage({ type: "danger", text: err.message });
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const displayName = farmer?.name || "Farmer";
+  const phone = farmer ? `+91 ${farmer.mobile.slice(0, 5)} ${farmer.mobile.slice(5)}` : "";
 
   return (
 
@@ -34,11 +80,11 @@ function Profile() {
         <div className="dashboard-card profile-sidebar">
 
           <div className="large-avatar">
-            R
+            {displayName.charAt(0).toUpperCase()}
           </div>
 
           <h3>
-            Ramesh Kumar
+            {displayName}
           </h3>
 
           <p>
@@ -64,7 +110,7 @@ function Profile() {
               <i className="bi bi-phone"></i>
 
               <span>
-                +91 98765 43210
+                {phone}
               </span>
 
             </div>
@@ -75,7 +121,7 @@ function Profile() {
               <i className="bi bi-geo-alt"></i>
 
               <span>
-                Lucknow, Uttar Pradesh
+                {farmer ? `${farmer.district}, ${farmer.state}` : ""}
               </span>
 
             </div>
@@ -116,8 +162,8 @@ function Profile() {
 
               <input
                 className="form-control"
-                value="Ramesh Kumar"
-                readOnly
+                value={form.name}
+                onChange={update("name")}
               />
 
             </div>
@@ -131,7 +177,7 @@ function Profile() {
 
               <input
                 className="form-control"
-                value="+91 98765 43210"
+                value={phone}
                 readOnly
               />
 
@@ -146,8 +192,8 @@ function Profile() {
 
               <input
                 className="form-control"
-                value="Lakhanpur"
-                readOnly
+                value={form.village}
+                onChange={update("village")}
               />
 
             </div>
@@ -161,8 +207,8 @@ function Profile() {
 
               <input
                 className="form-control"
-                value="Lucknow"
-                readOnly
+                value={form.district}
+                onChange={update("district")}
               />
 
             </div>
@@ -176,8 +222,8 @@ function Profile() {
 
               <input
                 className="form-control"
-                value="Uttar Pradesh"
-                readOnly
+                value={form.state}
+                onChange={update("state")}
               />
 
             </div>
@@ -189,11 +235,12 @@ function Profile() {
                 Primary Crop
               </label>
 
-              <select className="form-select">
+              <select className="form-select" value={form.primaryCrop} onChange={update("primaryCrop")}>
 
                 <option>Wheat</option>
                 <option>Rice</option>
                 <option>Maize</option>
+                <option>Barley</option>
 
               </select>
 
@@ -209,7 +256,8 @@ function Profile() {
               <textarea
                 className="form-control"
                 rows="3"
-                defaultValue="Lakhanpur Village, Lucknow, Uttar Pradesh"
+                value={form.address}
+                onChange={update("address")}
               ></textarea>
 
             </div>
@@ -217,9 +265,13 @@ function Profile() {
 
             <div className="col-12">
 
-              <button className="primary-btn">
+              {message && (
+                <div className={`alert alert-${message.type} py-2`}>{message.text}</div>
+              )}
 
-                Save Changes
+              <button className="primary-btn" onClick={handleSave} disabled={saving}>
+
+                {saving ? "Saving..." : "Save Changes"}
 
                 <i className="bi bi-check-lg"></i>
 

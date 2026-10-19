@@ -1,7 +1,17 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { getFarmer } from "../utils/api";
 import '../styles/Header.css'
 
 function Navbar({ onMenuClick }) {
+  const [farmer, setFarmer] = useState(getFarmer());
+
+  useEffect(() => {
+    const sync = () => setFarmer(getFarmer());
+    window.addEventListener("mandi-auth", sync);
+    return () => window.removeEventListener("mandi-auth", sync);
+  }, []);
+
+  const name = farmer?.name || "Farmer";
   return (
     <header className="top-navbar">
 
@@ -36,10 +46,10 @@ function Navbar({ onMenuClick }) {
 
         <div className="profile-mini">
 
-          <div className="profile-avatar">R</div>
+          <div className="profile-avatar">{name.charAt(0).toUpperCase()}</div>
 
           <div>
-            <strong>Ramesh Kumar</strong>
+            <strong>{name}</strong>
             <small>Farmer</small>
           </div>
 

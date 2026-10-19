@@ -1,6 +1,22 @@
 import React from "react";
+import useApi from "../../utils/useApi";
+import { padNum } from "../../utils/format";
+
+const ROW_TEXT = { completed: "Completed", serving: "Serving", waiting: "Waiting", booked: "Booked" };
+const MY_TEXT = {
+  booked: "Booked - check in on the day to join the queue",
+  checked_in: "Currently waiting",
+  waiting: "Currently waiting",
+  weighing: "Weighing in progress",
+  quality_check: "Quality check in progress",
+  completed: "Completed"
+};
 
 function LiveQueue() {
+
+  const { data, error, loading } = useApi("/queue/live", { poll: 5000 });
+  const queue = data?.queue;
+  const mine = queue?.mine;
 
   return (
 
@@ -35,6 +51,16 @@ function LiveQueue() {
       </div>
 
 
+      {error && <div className="alert alert-danger">{error}</div>}
+
+      {!loading && !queue && !error && (
+        <div className="dashboard-card text-center">
+          You have no active booking. Book a slot to join the queue.
+        </div>
+      )}
+
+      {queue && (
+      <>
       <div className="queue-dashboard-grid">
 
         {/* TOKEN */}
@@ -46,11 +72,11 @@ function LiveQueue() {
           </span>
 
           <div className="big-token">
-            A-105
+            {mine?.token}
           </div>
 
           <span className="token-status">
-            Currently waiting
+            {MY_TEXT[mine?.status] || ""}
           </span>
 
 
@@ -63,7 +89,7 @@ function LiveQueue() {
               </small>
 
               <strong>
-                #04
+                {mine?.position ? `#${padNum(mine.position)}` : "—"}
               </strong>
 
             </div>
@@ -76,7 +102,7 @@ function LiveQueue() {
               </small>
 
               <strong>
-                03
+                {mine?.ahead != null ? padNum(mine.ahead) : "—"}
               </strong>
 
             </div>
@@ -95,7 +121,7 @@ function LiveQueue() {
           </span>
 
           <div className="current-token">
-            A-101
+            {queue.nowServing || "—"}
           </div>
 
           <p>
@@ -110,7 +136,7 @@ function LiveQueue() {
             </span>
 
             <strong>
-              A-102
+              {queue.nextToken || "—"}
             </strong>
 
           </div>
@@ -127,7 +153,7 @@ function LiveQueue() {
           </span>
 
           <div className="wait-time">
-            24
+            {mine?.estimatedWaitMinutes ?? "—"}
             <span>min</span>
           </div>
 
@@ -139,7 +165,7 @@ function LiveQueue() {
 
             <i className="bi bi-arrow-clockwise"></i>
 
-            Updated just now
+            Updated {new Date(queue.updatedAt).toLocaleTimeString()}
 
           </div>
 
@@ -168,7 +194,7 @@ function LiveQueue() {
 
           <span className="center-name">
             <i className="bi bi-geo-alt"></i>
-            Lucknow Mandi Center
+            {queue.center.name}
           </span>
 
         </div>
@@ -176,121 +202,39 @@ function LiveQueue() {
 
         <div className="queue-list">
 
-          <div className="queue-row completed-row">
+          {queue.list.map((r) => (
 
-            <div className="queue-number">
-              A-100
-            </div>
+            <div
+              key={r.token}
+              className={`queue-row ${r.status === "completed" ? "completed-row" : ""} ${r.status === "serving" ? "serving-row" : ""} ${r.isMine ? "my-token" : ""}`}
+            >
 
-            <div className="queue-person">
-              <strong>
-                Farmer
-              </strong>
-              <small>
-                Completed
-              </small>
-            </div>
+              <div className="queue-number">
+                {r.token}
+              </div>
 
-            <span className="queue-badge completed">
-              Completed
-            </span>
+              <div className="queue-person">
+                <strong>
+                  {r.isMine ? "You" : "Farmer"}
+                </strong>
+                <small>
+                  {r.isMine ? "Your token" : ROW_TEXT[r.status]}
+                </small>
+              </div>
 
-          </div>
-
-
-          <div className="queue-row serving-row">
-
-            <div className="queue-number">
-              A-101
-            </div>
-
-            <div className="queue-person">
-              <strong>
-                Current Token
-              </strong>
-              <small>
-                Procurement in progress
-              </small>
-            </div>
-
-            <span className="queue-badge serving">
-              Serving
-            </span>
-
-          </div>
-
-
-          <div className="queue-row">
-
-            <div className="queue-number">
-              A-102
-            </div>
-
-            <div className="queue-person">
-              <strong>
-                Farmer
-              </strong>
-              <small>
-                Waiting
-              </small>
-            </div>
-
-            <span className="queue-badge waiting">
-              Waiting
-            </span>
-
-          </div>
-
-
-          <div className="queue-row">
-
-            <div className="queue-number">
-              A-103
-            </div>
-
-            <div className="queue-person">
-              <strong>
-                Farmer
-              </strong>
-              <small>
-                Waiting
-              </small>
-            </div>
-
-            <span className="queue-badge waiting">
-              Waiting
-            </span>
-
-          </div>
-
-
-          <div className="queue-row my-token">
-
-            <div className="queue-number">
-              A-105
-            </div>
-
-            <div className="queue-person">
-
-              <strong>
-                You
-              </strong>
-
-              <small>
-                Your token
-              </small>
+              <span className={`queue-badge ${r.isMine ? "your-token" : r.status}`}>
+                {r.isMine ? "Your Token" : ROW_TEXT[r.status]}
+              </span>
 
             </div>
 
-            <span className="queue-badge your-token">
-              Your Token
-            </span>
-
-          </div>
+          ))}
 
         </div>
 
       </div>
+      </>
+      )}
 
     </div>
 

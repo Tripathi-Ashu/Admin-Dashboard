@@ -5,6 +5,7 @@ import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register";
 
 import FarmerLayout from "../layouts/FarmerLayout";
+import ProtectedRoute from "../components/ProtectedRoute";
 
 import Dashboard from "../pages/farmer/Dashboard";
 import BookSlot from "../pages/farmer/BookSlot";
@@ -23,6 +24,7 @@ function AppRoutes() {
       <Route path="/register" element={<Register />} />
 
       {/* FARMER */}
+      <Route element={<ProtectedRoute />}>
       <Route path="/farmer" element={<FarmerLayout />}>
         <Route index element={<Dashboard />} />
         <Route path="dashboard" element={<Dashboard />} />
@@ -31,6 +33,7 @@ function AppRoutes() {
         <Route path="queue" element={<LiveQueue />} />
         <Route path="status" element={<ProcurementStatus />} />
         <Route path="profile" element={<Profile />} />
+      </Route>
       </Route>
 
     </Routes>

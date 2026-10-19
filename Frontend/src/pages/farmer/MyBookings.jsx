@@ -1,6 +1,41 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import useApi from "../../utils/useApi";
+import { api } from "../../utils/api";
+import { formatDate, STATUS_TEXT, statusClass, CANCELLABLE } from "../../utils/format";
+
+const todayISO = () => {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+};
 
 function MyBookings() {
+
+  const [search, setSearch] = useState("");
+  const [query, setQuery] = useState("");
+  const [filter, setFilter] = useState("");
+  const [actionError, setActionError] = useState("");
+
+  // debounce the search box
+  useEffect(() => {
+    const t = setTimeout(() => setQuery(search.trim()), 300);
+    return () => clearTimeout(t);
+  }, [search]);
+
+  const params = new URLSearchParams();
+  if (filter) params.set("status", filter);
+  if (query) params.set("q", query);
+  const { data, error, loading, reload } = useApi(`/bookings?${params.toString()}`);
+  const bookings = data?.bookings || [];
+
+  const act = async (id, action) => {
+    setActionError("");
+    try {
+      await api(`/bookings/${id}/${action}`, { method: "POST" });
+      reload();
+    } catch (err) {
+      setActionError(err.message);
+    }
+  };
 
   return (
 
@@ -37,22 +72,32 @@ function MyBookings() {
 
             <input
               placeholder="Search bookings..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
             />
 
           </div>
 
 
-          <select className="form-select filter-select">
+          <select
+            className="form-select filter-select"
+            value={filter}
+            onChange={(e) => setFilter(e.target.value)}
+          >
 
-            <option>All Status</option>
-            <option>Upcoming</option>
-            <option>Completed</option>
-            <option>Cancelled</option>
+            <option value="">All Status</option>
+            <option value="upcoming">Upcoming</option>
+            <option value="completed">Completed</option>
+            <option value="cancelled">Cancelled</option>
 
           </select>
 
         </div>
 
+
+        {(error || actionError) && (
+          <div className="alert alert-danger">{error || actionError}</div>
+        )}
 
         <div className="table-responsive">
 
@@ -77,160 +122,63 @@ function MyBookings() {
 
             <tbody>
 
-              <tr>
+              {bookings.map((b) => (
 
-                <td>
-                  <strong className="token-text">
-                    A-105
-                  </strong>
-                </td>
+                <tr key={b.id}>
 
-                <td>
-                  08 Sep 2026
-                </td>
+                  <td>
+                    <strong className="token-text">
+                      {b.token}
+                    </strong>
+                  </td>
 
-                <td>
-                  Lucknow Mandi
-                </td>
+                  <td>{formatDate(b.date)}</td>
 
-                <td>
-                  10:00 AM
-                </td>
+                  <td>{b.center.name}</td>
 
-                <td>
-                  Wheat
-                </td>
+                  <td>{b.slot}</td>
 
-                <td>
-                  <span className="table-status waiting">
-                    Upcoming
-                  </span>
-                </td>
+                  <td>{b.crop}</td>
 
-                <td>
-                  <button className="icon-btn">
-                    <i className="bi bi-three-dots"></i>
-                  </button>
-                </td>
+                  <td>
+                    <span className={`table-status ${statusClass(b.status)}`}>
+                      {STATUS_TEXT[b.status]}
+                    </span>
+                  </td>
 
-              </tr>
+                  <td>
+                    {b.status === "booked" && b.date === todayISO() && (
+                      <button
+                        className="icon-btn"
+                        title="Check in"
+                        onClick={() => act(b.id, "check-in")}
+                      >
+                        <i className="bi bi-box-arrow-in-right"></i>
+                      </button>
+                    )}
 
+                    {CANCELLABLE.includes(b.status) && (
+                      <button
+                        className="icon-btn"
+                        title="Cancel booking"
+                        onClick={() => window.confirm("Cancel this booking?") && act(b.id, "cancel")}
+                      >
+                        <i className="bi bi-x-circle"></i>
+                      </button>
+                    )}
+                  </td>
 
-              <tr>
+                </tr>
 
-                <td>
-                  <strong className="token-text">
-                    A-089
-                  </strong>
-                </td>
+              ))}
 
-                <td>
-                  02 Sep 2026
-                </td>
-
-                <td>
-                  Lucknow Mandi
-                </td>
-
-                <td>
-                  09:00 AM
-                </td>
-
-                <td>
-                  Wheat
-                </td>
-
-                <td>
-                  <span className="table-status completed">
-                    Completed
-                  </span>
-                </td>
-
-                <td>
-                  <button className="icon-btn">
-                    <i className="bi bi-three-dots"></i>
-                  </button>
-                </td>
-
-              </tr>
-
-
-              <tr>
-
-                <td>
-                  <strong className="token-text">
-                    A-071
-                  </strong>
-                </td>
-
-                <td>
-                  28 Aug 2026
-                </td>
-
-                <td>
-                  Lucknow Mandi
-                </td>
-
-                <td>
-                  11:00 AM
-                </td>
-
-                <td>
-                  Rice
-                </td>
-
-                <td>
-                  <span className="table-status completed">
-                    Completed
-                  </span>
-                </td>
-
-                <td>
-                  <button className="icon-btn">
-                    <i className="bi bi-three-dots"></i>
-                  </button>
-                </td>
-
-              </tr>
-
-
-              <tr>
-
-                <td>
-                  <strong className="token-text">
-                    A-052
-                  </strong>
-                </td>
-
-                <td>
-                  21 Aug 2026
-                </td>
-
-                <td>
-                  Lucknow Mandi
-                </td>
-
-                <td>
-                  02:00 PM
-                </td>
-
-                <td>
-                  Rice
-                </td>
-
-                <td>
-                  <span className="table-status cancelled">
-                    Cancelled
-                  </span>
-                </td>
-
-                <td>
-                  <button className="icon-btn">
-                    <i className="bi bi-three-dots"></i>
-                  </button>
-                </td>
-
-              </tr>
+              {!loading && bookings.length === 0 && (
+                <tr>
+                  <td colSpan="7" className="text-center text-muted">
+                    No bookings found
+                  </td>
+                </tr>
+              )}
 
             </tbody>
 

@@ -1,15 +1,32 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { api, saveSession } from "../../utils/api";
 
 function Register() {
 
   const navigate = useNavigate();
 
-  const handleRegister = (e) => {
+  const [form, setForm] = useState({ name: "", mobile: "", village: "", password: "" });
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const update = (field) => (e) => setForm({ ...form, [field]: e.target.value });
+
+  const handleRegister = async (e) => {
 
     e.preventDefault();
+    setError("");
+    setLoading(true);
 
-    navigate("/farmer/dashboard");
+    try {
+      const data = await api("/auth/register", { method: "POST", body: form });
+      saveSession(data.token, data.farmer);
+      navigate("/farmer/dashboard");
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
 
   };
 
@@ -81,6 +98,8 @@ function Register() {
                   type="text"
                   className="form-control"
                   placeholder="Enter your name"
+                  value={form.name}
+                  onChange={update("name")}
                   required
                 />
 
@@ -101,6 +120,8 @@ function Register() {
                   type="tel"
                   className="form-control"
                   placeholder="Enter mobile number"
+                  value={form.mobile}
+                  onChange={update("mobile")}
                   required
                 />
 
@@ -121,6 +142,8 @@ function Register() {
                   type="text"
                   className="form-control"
                   placeholder="Enter village"
+                  value={form.village}
+                  onChange={update("village")}
                   required
                 />
 
@@ -141,6 +164,8 @@ function Register() {
                   type="password"
                   className="form-control"
                   placeholder="Create password"
+                  value={form.password}
+                  onChange={update("password")}
                   required
                 />
 
@@ -149,9 +174,11 @@ function Register() {
             </div>
 
 
-            <button className="primary-btn w-100">
+            {error && <div className="alert alert-danger py-2">{error}</div>}
 
-              Create Account
+            <button className="primary-btn w-100" disabled={loading}>
+
+              {loading ? "Creating..." : "Create Account"}
 
               <i className="bi bi-arrow-right"></i>
 

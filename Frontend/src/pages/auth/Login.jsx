@@ -1,15 +1,31 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { api, saveSession } from "../../utils/api";
 
 function Login() {
 
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const [mobile, setMobile] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleLogin = async (e) => {
 
     e.preventDefault();
+    setError("");
+    setLoading(true);
 
-    navigate("/farmer/dashboard");
+    try {
+      const data = await api("/auth/login", { method: "POST", body: { mobile, password } });
+      saveSession(data.token, data.farmer);
+      navigate("/farmer/dashboard");
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
 
   };
 
@@ -112,6 +128,8 @@ function Login() {
                   type="tel"
                   className="form-control"
                   placeholder="Enter mobile number"
+                  value={mobile}
+                  onChange={(e) => setMobile(e.target.value)}
                   required
                 />
 
@@ -132,6 +150,8 @@ function Login() {
                   type="password"
                   className="form-control"
                   placeholder="Enter password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   required
                 />
 
@@ -157,9 +177,11 @@ function Login() {
             </div>
 
 
-            <button className="primary-btn w-100">
+            {error && <div className="alert alert-danger py-2">{error}</div>}
 
-              Login
+            <button className="primary-btn w-100" disabled={loading}>
+
+              {loading ? "Logging in..." : "Login"}
 
               <i className="bi bi-arrow-right"></i>
 

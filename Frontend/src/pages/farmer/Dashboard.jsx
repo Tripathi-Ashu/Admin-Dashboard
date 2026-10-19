@@ -1,10 +1,33 @@
 import { Link } from 'react-router-dom';
 import StatCard from '../../components/StatCard';
+import useApi from '../../utils/useApi';
+import { getFarmer } from '../../utils/api';
+import { formatDate, padNum, STATUS_TEXT, statusClass } from '../../utils/format';
+
+function greeting() {
+  const h = new Date().getHours();
+  return h < 12 ? 'Good Morning' : h < 17 ? 'Good Afternoon' : 'Good Evening';
+}
 
 function Dashboard() {
+  const { data: active, error } = useApi('/bookings/active', { poll: 10000 });
+  const { data: stats } = useApi('/bookings/stats');
+
+  const booking = active?.booking;
+  const queue = active?.queue;
+  const mine = queue?.mine;
+  const firstName = (getFarmer()?.name || 'Farmer').split(' ')[0];
+
+  const total = queue?.list?.length || 0;
+  const done = queue?.list?.filter((r) => r.status === 'completed').length || 0;
+  const progress = total ? Math.round((done / total) * 100) : 0;
+
   // Values used in the duplicate card
-  const duplicateHeaderTitle = 'Wheat Procurement';
-  const duplicateCenterName = 'Lucknow Mandi';
+  const duplicateHeaderTitle = booking ? `${booking.crop} Procurement` : 'No active procurement';
+  const duplicateCenterName = booking?.center.name || '-';
+  const bookingDate = booking ? formatDate(booking.date, true) : '-';
+  const bookingSlot = booking ? `${booking.slot} - ${booking.endTime}` : '-';
+  const bookingToken = booking?.token || '-';
 
   return (
     <div>
@@ -13,7 +36,7 @@ function Dashboard() {
         <div>
           <span className="page-label">FARMER DASHBOARD</span>
 
-          <h1>Good Morning, Ramesh 👋</h1>
+          <h1>{greeting()}, {firstName} 👋</h1>
 
           <p>
             Here's what's happening with your procurement today.
@@ -25,35 +48,37 @@ function Dashboard() {
         </Link>
       </div>
 
+      {error && <div className="alert alert-danger">{error}</div>}
+
       {/* STATS */}
       <div className="stats-grid">
         <StatCard
           title="Active Token"
-          value="A-105"
+          value={bookingToken}
           icon="bi-ticket-perforated"
-          description="Today, 10:00 AM"
+          description={booking ? `${formatDate(booking.date)}, ${booking.slot}` : 'No active booking'}
           type="green"
         />
 
         <StatCard
           title="Queue Position"
-          value="#04"
+          value={mine?.position ? `#${padNum(mine.position)}` : '—'}
           icon="bi-people"
-          description="3 farmers ahead"
+          description={mine?.ahead != null ? `${mine.ahead} farmers ahead` : 'Check in to join the queue'}
           type="blue"
         />
 
         <StatCard
           title="Estimated Wait"
-          value="24 min"
+          value={mine?.estimatedWaitMinutes != null ? `${mine.estimatedWaitMinutes} min` : '—'}
           icon="bi-clock"
-          description="Updated just now"
+          description={queue ? 'Updated just now' : 'No active queue'}
           type="orange"
         />
 
         <StatCard
           title="Completed"
-          value="12"
+          value={String(stats?.completedThisYear ?? 0)}
           icon="bi-check-circle"
           description="Procurements this year"
           type="purple"
@@ -74,8 +99,8 @@ function Dashboard() {
               <h4>{duplicateHeaderTitle}</h4>
             </div>
 
-            <span className="status-badge waiting">
-              <span></span> Waiting
+            <span className={`status-badge ${booking ? statusClass(booking.status) : 'waiting'}`}>
+              <span></span> {booking ? STATUS_TEXT[booking.status] : 'None'}
             </span>
           </div>
 
@@ -87,30 +112,30 @@ function Dashboard() {
 
             <div>
               <small>DATE</small>
-              <strong>10 September 2026</strong>
+              <strong>{bookingDate}</strong>
             </div>
 
             <div>
               <small>TIME SLOT</small>
-              <strong>10:00 AM - 11:00 AM</strong>
+              <strong>{bookingSlot}</strong>
             </div>
 
             <div>
               <small>TOKEN NUMBER</small>
-              <strong className="token-number">A-105</strong>
+              <strong className="token-number">{bookingToken}</strong>
             </div>
           </div>
 
           <div className="queue-progress">
             <div className="queue-progress-top">
               <span>Current queue progress</span>
-              <strong>16 / 20</strong>
+              <strong>{done} / {total}</strong>
             </div>
 
             <div className="progress">
               <div
                 className="progress-bar"
-                style={{ width: '80%' }}
+                style={{ width: `${progress}%` }}
               ></div>
             </div>
           </div>
@@ -132,8 +157,8 @@ function Dashboard() {
               <h4>{duplicateHeaderTitle}</h4>
             </div>
 
-            <span className="status-badge waiting">
-              <span></span> Waiting
+            <span className={`status-badge ${booking ? statusClass(booking.status) : 'waiting'}`}>
+              <span></span> {booking ? STATUS_TEXT[booking.status] : 'None'}
             </span>
           </div>
 
@@ -145,17 +170,17 @@ function Dashboard() {
 
             <div>
               <small>DATE</small>
-              <strong>10 September 2026</strong>
+              <strong>{bookingDate}</strong>
             </div>
 
             <div>
               <small>TIME SLOT</small>
-              <strong>10:00 AM - 11:00 AM</strong>
+              <strong>{bookingSlot}</strong>
             </div>
 
             <div>
               <small>TOKEN NUMBER</small>
-              <strong className="token-number">A-105</strong>
+              <strong className="token-number">{bookingToken}</strong>
             </div>
           </div>
         </div>
@@ -255,31 +280,28 @@ function Dashboard() {
             </thead>
 
             <tbody>
-              <tr>
-                <td>02 Sep 2026</td>
-                <td>Lucknow Mandi</td>
-                <td>Wheat</td>
-                <td>42.5 Quintal</td>
+              {(stats?.recent || []).map((b) => (
+                <tr key={b.id}>
+                  <td>{formatDate(b.date)}</td>
+                  <td>{b.center.name}</td>
+                  <td>{b.crop}</td>
+                  <td>{b.quantity} Quintal</td>
 
-                <td>
-                  <span className="table-status completed">
-                    Completed
-                  </span>
-                </td>
-              </tr>
+                  <td>
+                    <span className={`table-status ${statusClass(b.status)}`}>
+                      {STATUS_TEXT[b.status]}
+                    </span>
+                  </td>
+                </tr>
+              ))}
 
-              <tr>
-                <td>28 Aug 2026</td>
-                <td>Lucknow Mandi</td>
-                <td>Rice</td>
-                <td>30 Quintal</td>
-
-                <td>
-                  <span className="table-status completed">
-                    Completed
-                  </span>
-                </td>
-              </tr>
+              {stats && stats.recent.length === 0 && (
+                <tr>
+                  <td colSpan="5" className="text-center text-muted">
+                    No completed procurements yet
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

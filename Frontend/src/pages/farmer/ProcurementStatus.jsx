@@ -1,46 +1,40 @@
 import React from "react";
+import useApi from "../../utils/useApi";
+import { formatDate, formatDateTime, STATUS_TEXT, statusClass } from "../../utils/format";
+
+const STEPS = [
+  { title: "Slot Booked", icon: "bi-calendar-check" },
+  { title: "Checked In", icon: "bi-person-check" },
+  { title: "Waiting in Queue", icon: "bi-people" },
+  { title: "Weighing", icon: "bi-speedometer2" },
+  { title: "Quality Check", icon: "bi-clipboard-check" },
+  { title: "Procurement Completed", icon: "bi-check-circle" }
+];
+
+// index of the step the booking is currently on
+const CURRENT = { booked: 0, checked_in: 2, waiting: 2, weighing: 3, quality_check: 4, completed: 5 };
 
 function ProcurementStatus() {
 
-  const steps = [
-    {
-      title: "Slot Booked",
-      date: "08 Sep, 09:32 AM",
-      icon: "bi-calendar-check",
-      done: true
-    },
-    {
-      title: "Checked In",
-      date: "08 Sep, 09:48 AM",
-      icon: "bi-person-check",
-      done: true
-    },
-    {
-      title: "Waiting in Queue",
-      date: "Current Status",
-      icon: "bi-people",
-      done: true,
-      active: true
-    },
-    {
-      title: "Weighing",
-      date: "Pending",
-      icon: "bi-speedometer2",
-      done: false
-    },
-    {
-      title: "Quality Check",
-      date: "Pending",
-      icon: "bi-clipboard-check",
-      done: false
-    },
-    {
-      title: "Procurement Completed",
-      date: "Pending",
-      icon: "bi-check-circle",
-      done: false
-    }
-  ];
+  const { data, error, loading } = useApi("/bookings/active", { poll: 5000 });
+  const booking = data?.booking;
+  const current = booking ? CURRENT[booking.status] : -1;
+
+  const stepDate = (index) => {
+    if (index === 0) return formatDateTime(booking.createdAt) || "Done";
+    if (index === 1 && booking.checkedInAt) return formatDateTime(booking.checkedInAt);
+    if (index === current) return `Current Status${booking.updatedAt ? " • " + (formatDateTime(booking.updatedAt) || "") : ""}`;
+    return index < current ? "Done" : "Pending";
+  };
+
+  const steps = booking
+    ? STEPS.map((step, index) => ({
+        ...step,
+        date: stepDate(index),
+        done: index <= current,
+        active: index === current
+      }))
+    : [];
 
   return (
 
@@ -67,6 +61,16 @@ function ProcurementStatus() {
       </div>
 
 
+      {error && <div className="alert alert-danger">{error}</div>}
+
+      {!loading && !booking && !error && (
+        <div className="dashboard-card text-center">
+          You have no active procurement. Book a slot to get started.
+        </div>
+      )}
+
+      {booking && (
+      <>
       <div className="dashboard-card status-main-card">
 
         <div className="status-overview">
@@ -78,7 +82,7 @@ function ProcurementStatus() {
             </span>
 
             <h2 className="status-token">
-              A-105
+              {booking.token}
             </h2>
 
           </div>
@@ -86,12 +90,12 @@ function ProcurementStatus() {
 
           <div className="status-overview-center">
 
-            <span className="table-status waiting">
-              Waiting in Queue
+            <span className={`table-status ${statusClass(booking.status)}`}>
+              {STATUS_TEXT[booking.status]}
             </span>
 
             <small>
-              Last updated: Just now
+              Last updated: {formatDateTime(booking.updatedAt) || "Just now"}
             </small>
 
           </div>
@@ -104,7 +108,7 @@ function ProcurementStatus() {
             </small>
 
             <strong>
-              Lucknow Mandi Center
+              {booking.center.name}
             </strong>
 
           </div>
@@ -182,7 +186,7 @@ function ProcurementStatus() {
             </small>
 
             <strong>
-              Wheat
+              {booking.crop}
             </strong>
 
           </div>
@@ -195,7 +199,7 @@ function ProcurementStatus() {
             </small>
 
             <strong>
-              45 Quintal
+              {booking.quantity} Quintal
             </strong>
 
           </div>
@@ -208,7 +212,7 @@ function ProcurementStatus() {
             </small>
 
             <strong>
-              08 September 2026
+              {formatDate(booking.date, true)}
             </strong>
 
           </div>
@@ -221,7 +225,7 @@ function ProcurementStatus() {
             </small>
 
             <strong>
-              10:00 AM - 11:00 AM
+              {booking.slot} - {booking.endTime}
             </strong>
 
           </div>
@@ -229,6 +233,8 @@ function ProcurementStatus() {
         </div>
 
       </div>
+      </>
+      )}
 
     </div>
 

@@ -1,6 +1,7 @@
 import React from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import '../styles/Sidebar.css'
+import { clearSession } from "../utils/api";
 function Sidebar({ isOpen }) {
 
   const navigate = useNavigate();
@@ -15,6 +16,7 @@ function Sidebar({ isOpen }) {
   ];
 
   const handleLogout = () => {
+    clearSession();
     navigate("/login");
   };
 

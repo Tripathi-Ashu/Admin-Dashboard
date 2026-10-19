@@ -1,19 +1,62 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import useApi from "../../utils/useApi";
+import { api } from "../../utils/api";
+import { formatDate, pad, toISODate } from "../../utils/format";
+
+const DAY = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
+const MON = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
 
 function BookSlot() {
 
-  const [selectedSlot, setSelectedSlot] = useState("10:00 AM");
+  const navigate = useNavigate();
 
-  const slots = [
-    "08:00 AM",
-    "09:00 AM",
-    "10:00 AM",
-    "11:00 AM",
-    "12:00 PM",
-    "02:00 PM",
-    "03:00 PM",
-    "04:00 PM"
-  ];
+  const dates = useMemo(() => Array.from({ length: 4 }, (_, i) => {
+    const d = new Date();
+    d.setDate(d.getDate() + i);
+    return {
+      iso: toISODate(d),
+      label: i === 0 ? "TODAY" : i === 1 ? "TOMORROW" : DAY[d.getDay()],
+      day: pad(d.getDate()),
+      month: MON[d.getMonth()]
+    };
+  }), []);
+
+  const [date, setDate] = useState(dates[0].iso);
+  const [selectedSlot, setSelectedSlot] = useState("");
+  const [crop, setCrop] = useState("Wheat");
+  const [quantity, setQuantity] = useState("");
+  const [error, setError] = useState("");
+  const [saving, setSaving] = useState(false);
+
+  const { data: centerData } = useApi("/centers");
+  const center = centerData?.centers?.[0];
+  const { data: slotData, reload: reloadSlots } = useApi(
+    center ? `/centers/${center.id}/slots?date=${date}` : "/centers"
+  );
+  const slots = center ? slotData?.slots || [] : [];
+  const chosen = slots.find((x) => x.slot === selectedSlot);
+
+  const handleConfirm = async () => {
+    setError("");
+    if (!center) return setError("No procurement center available");
+    if (!selectedSlot) return setError("Please select a time slot");
+    if (!(Number(quantity) > 0)) return setError("Enter the estimated quantity");
+
+    setSaving(true);
+    try {
+      await api("/bookings", {
+        method: "POST",
+        body: { centerId: center.id, date, slot: selectedSlot, crop, quantity: Number(quantity) }
+      });
+      navigate("/farmer/dashboard");
+    } catch (err) {
+      setError(err.message);
+      reloadSlots();
+    } finally {
+      setSaving(false);
+    }
+  };
 
   return (
 
@@ -66,22 +109,22 @@ function BookSlot() {
               <div className="center-details">
 
                 <strong>
-                  Lucknow Mandi Procurement Center
+                  {center?.name || "Loading centers..."}
                 </strong>
 
                 <span>
                   <i className="bi bi-geo-alt"></i>
-                  Chinhat, Lucknow
+                  {center?.location || ""}
                 </span>
 
                 <small>
-                  2.4 km away • Open today
+                  Open today
                 </small>
 
               </div>
 
               <span className="capacity-badge">
-                32 slots
+                {center?.totalSlots ?? 0} slots
               </span>
 
             </div>
@@ -98,72 +141,29 @@ function BookSlot() {
 
             <div className="date-grid">
 
-              <div className="date-option">
+              {dates.map((d) => (
 
-                <small>
-                  TODAY
-                </small>
+                <div
+                  key={d.iso}
+                  className={d.iso === date ? "date-option selected" : "date-option"}
+                  onClick={() => { setDate(d.iso); setSelectedSlot(""); }}
+                >
 
-                <strong>
-                  07
-                </strong>
+                  <small>
+                    {d.label}
+                  </small>
 
-                <span>
-                  SEP
-                </span>
+                  <strong>
+                    {d.day}
+                  </strong>
 
-              </div>
+                  <span>
+                    {d.month}
+                  </span>
 
+                </div>
 
-              <div className="date-option selected">
-
-                <small>
-                  TOMORROW
-                </small>
-
-                <strong>
-                  08
-                </strong>
-
-                <span>
-                  SEP
-                </span>
-
-              </div>
-
-
-              <div className="date-option">
-
-                <small>
-                  WED
-                </small>
-
-                <strong>
-                  09
-                </strong>
-
-                <span>
-                  SEP
-                </span>
-
-              </div>
-
-
-              <div className="date-option">
-
-                <small>
-                  THU
-                </small>
-
-                <strong>
-                  10
-                </strong>
-
-                <span>
-                  SEP
-                </span>
-
-              </div>
+              ))}
 
             </div>
 
@@ -179,25 +179,26 @@ function BookSlot() {
 
             <div className="slot-grid">
 
-              {slots.map((slot) => (
+              {slots.map((s) => (
 
                 <button
-                  key={slot}
+                  key={s.slot}
                   type="button"
+                  disabled={s.spotsLeft === 0}
                   className={
-                    selectedSlot === slot
+                    selectedSlot === s.slot
                       ? "slot-option selected"
                       : "slot-option"
                   }
-                  onClick={() => setSelectedSlot(slot)}
+                  onClick={() => setSelectedSlot(s.slot)}
                 >
 
                   <i className="bi bi-clock"></i>
 
-                  {slot}
+                  {s.slot}
 
                   <small>
-                    12 spots left
+                    {s.spotsLeft === 0 ? "Full" : `${s.spotsLeft} spots left`}
                   </small>
 
                 </button>
@@ -220,7 +221,7 @@ function BookSlot() {
                   Crop / Produce
                 </label>
 
-                <select className="form-select">
+                <select className="form-select" value={crop} onChange={(e) => setCrop(e.target.value)}>
 
                   <option>Wheat</option>
                   <option>Rice</option>
@@ -244,6 +245,9 @@ function BookSlot() {
                     type="number"
                     className="form-control"
                     placeholder="Enter quantity"
+                    min="1"
+                    value={quantity}
+                    onChange={(e) => setQuantity(e.target.value)}
                   />
 
                   <span className="input-group-text">
@@ -285,11 +289,11 @@ function BookSlot() {
               <div>
 
                 <strong>
-                  Lucknow Mandi
+                  {center?.name || "-"}
                 </strong>
 
                 <small>
-                  Chinhat, Lucknow
+                  {center?.location || ""}
                 </small>
 
               </div>
@@ -302,7 +306,7 @@ function BookSlot() {
               <span>Date</span>
 
               <strong>
-                08 September 2026
+                {formatDate(date, true)}
               </strong>
 
             </div>
@@ -313,7 +317,7 @@ function BookSlot() {
               <span>Time</span>
 
               <strong>
-                {selectedSlot} - 11:00 AM
+                {chosen ? `${chosen.slot} - ${chosen.endTime}` : "Select a slot"}
               </strong>
 
             </div>
@@ -324,7 +328,7 @@ function BookSlot() {
               <span>Produce</span>
 
               <strong>
-                Wheat
+                {crop}{quantity ? ` • ${quantity} Quintal` : ""}
               </strong>
 
             </div>
@@ -345,9 +349,11 @@ function BookSlot() {
             </div>
 
 
-            <button className="primary-btn w-100 mt-3">
+            {error && <div className="alert alert-danger py-2 mt-3 mb-0">{error}</div>}
 
-              Confirm Booking
+            <button className="primary-btn w-100 mt-3" onClick={handleConfirm} disabled={saving}>
+
+              {saving ? "Booking..." : "Confirm Booking"}
 
               <i className="bi bi-arrow-right"></i>
 
